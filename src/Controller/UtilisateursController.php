@@ -30,17 +30,6 @@ class UtilisateursController extends AbstractController
         ]);
     }
 
-/**
-     * @Route("/rechercheUtilisateur/{id}", name="rechercheUtilisateur_index", methods={"GET","POST"})
-     */
-    public function rechercheUtilisateur(UtilisateursRepository $utilisateursRepository): Response
-    {
-        $utilisateurs = $utilisateursRepository-> findByUtilisateursCivilite();
-    return $this->render('utilisateurs/rechercheUtilisateur.html.twig', [
-        'id' => $utilisateurs ->getId(),
-        'utilisateur' => $utilisateurs,
-    ]);
-}
     
 /**
      * @Route("/formulaireUtilisateur", name = "formulaireUtilisateur_index", methods={"GET","POST"})
@@ -71,7 +60,7 @@ class UtilisateursController extends AbstractController
      * @Route("/nouvelUtilisateur", name="nouvelUtilisateur_index", methods={"GET","POST"})
      * @ISGranted("ROLE_ADMIN")
      */
-    public function nouvelUtilisateur(Request $request, UserPasswordEncoderInterface $userPasswordEncoder): Response
+    public function nouvelUtilisateur(Request $request): Response
     {
         $utilisateurs = new Utilisateurs();
         $form = $this->createForm(RegistrationFormType::class, $utilisateurs);
@@ -80,13 +69,7 @@ class UtilisateursController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
 
-              // encode the password
-              $utilisateurs->setPassword(
-                $userPasswordEncoder->encodePassword(
-                    $utilisateurs,
-                    $form->get('password')->getData()
-                )
-            );
+              
 
             $entityManager->persist($utilisateurs);
 
@@ -127,7 +110,7 @@ class UtilisateursController extends AbstractController
             $entityManager->persist($utilisateurs);
             $entityManager->flush();
 
-            return $this->redirectToRoute('utilisateur_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_utilisateur', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('utilisateurs/modifierUtilisateur.html.twig', [
@@ -139,33 +122,13 @@ class UtilisateursController extends AbstractController
 // SUPPRESSION DES UTILISATEURS
     /**
      * @Route("/supprimerUtilisateur/{id}" , name="supprimerUtilisateur_index", methods= {"GET","POST"})
-     * @ISGranted("ROLE_ADMIN")
      */
     public function supprimerUtilisateur(Request $request, Utilisateurs $utilisateurs , EntityManagerInterface $entityManager) : Response 
     {           
             $entityManager->remove($utilisateurs);
             $entityManager->flush();
-            return $this->redirectToRoute('utilisateur_index'); 
+            return $this->redirectToRoute('app_utilisateur'); 
     }
-
-/**
-     * @Route("/abonner", name="monEspacePersonel_index")
-     */
-    public function monEspacePersonnel(): Response
-    {
-        return $this->render('utilisateurs/monEspacePersonnel.html.twig', []);
-    }
-
-/**
-     * @Route("/abonner", name="pageAccueilEspacePerso_index")
-     */
-    public function pageAccueilEspacePersonnel(): Response
-    {
-        return $this->render('utilisateurs/pageAccueilEspacePerso.html.twig', []);
-    }
-
-
-    
 
 
     }

@@ -44,7 +44,8 @@ $email = $faker->email;
         ->setLogin($email)
         ->setPassword($faker->password())
                 ->setVille($faker->city)
-                                ->setCodePostal($faker->postcode)
+                                
+                ->setCodePostal($faker->postcode)
                 ->setPays($faker->city)
                 ->setTelephone($faker->phoneNumber)
                 ->setPeriode($faker->date())
